@@ -33,5 +33,5 @@ export class AppComponent implements OnInit {
     );
   }
 
-  title = 'stockexchange-egid.client';
+  title = 'Dashboard';
 }
