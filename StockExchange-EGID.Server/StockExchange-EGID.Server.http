@@ -1,0 +1,6 @@
+@StockExchange_EGID.Server_HostAddress = http://localhost:5167
+
+GET {{StockExchange_EGID.Server_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
