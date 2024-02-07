@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
@@ -14,9 +15,15 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<ApplicationContext>(options =>
 options.UseSqlServer(builder.Configuration.GetConnectionString("APIContext") ??
 throw new InvalidOperationException("Connections string: APIContext was not found"))
-, ServiceLifetime.Scoped);
+, ServiceLifetime.Singleton);
 
 builder.Services.AddIdentity<User, IdentityRole>().AddEntityFrameworkStores<ApplicationContext>().AddDefaultTokenProviders();
+
+
+
+// set up signalR service
+builder.Services.AddSignalR();
+builder.Services.AddSingleton<StockPriceGenerator>();
 
 // set up Jwt auth services
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
@@ -144,10 +151,22 @@ app.UseSwaggerUI(c =>
 app.UseCors();
 
 // set up our api to use attribute based routing
+// SignalR hub mapping
+//app.MapHub<StockHub>("/stockhub");
+
 app.UseEndpoints(endpoints =>
 {
     endpoints.MapControllers();
+    endpoints.MapHub<StockHub>("/stockhub");
+});
+// Start the stock price generator
+//var stockPriceGenerator = app.Services.GetRequiredService<StockPriceGenerator>();
+//stockPriceGenerator.Start();
+using (var scope = app.Services.CreateScope())
+{
+    var services = scope.ServiceProvider;
+    var stockPriceGenerator = services.GetRequiredService<StockPriceGenerator>();
+    stockPriceGenerator.Start();
 }
-);
 
 app.Run();

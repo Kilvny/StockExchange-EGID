@@ -16,6 +16,7 @@ namespace StockExchange_EGID.Server.DataAccess.EFCore
 
            await SeedAdmins(builder);
            await SeedUsers(builder);
+           await SeedStocks(builder);
         }
 
         private async Task SeedUsers(ModelBuilder builder)
@@ -62,6 +63,36 @@ namespace StockExchange_EGID.Server.DataAccess.EFCore
             admin.Password = admin.PasswordHash;
             builder.Entity<User>().HasData(admin);
         }
-        public DbSet<User> users { get; set; }
+
+        private async Task SeedStocks(ModelBuilder builder)
+        {
+            // Define the symbols, names, and prices
+            var stockData = new[]
+            {
+                new { Symbol = "AAPL", Name = "Apple Inc.", Price = 150.25m },
+                new { Symbol = "GOOGL", Name = "Alphabet Inc.", Price = 2800.45m },
+                new { Symbol = "MSFT", Name = "Microsoft Corporation", Price = 300.00m },
+                new { Symbol = "AMZN", Name = "Amazon.com Inc.", Price = 3300.00m },
+                new { Symbol = "TSLA", Name = "Tesla Inc.", Price = 800.00m }
+            };
+
+            // Seed the stocks table with the provided data
+            foreach (var stock in stockData)
+            {
+                var newStock = new Stock
+                {
+                    Id = Guid.NewGuid(),
+                    Symbol = stock.Symbol,
+                    Name = stock.Name,
+                    Price = stock.Price
+                };
+                builder.Entity<Stock>().HasData(newStock);
+            }
+
+        }
+
+        public DbSet<User> Users { get; set; }
+        public DbSet<Stock> Stocks { get; set; }
+        public DbSet<StockHistory>  StocksHistories { get; set; }
     }
 }

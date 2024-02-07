@@ -7,4 +7,7 @@
     <!-- Folder where production build objects will be placed -->
     <PublishAssetsDirectory>$(MSBuildProjectDirectory)\dist\stockexchange-egid.client\</PublishAssetsDirectory>
   </PropertyGroup>
+  <ItemGroup>
+    <Folder Include="src\app\services\" />
+  </ItemGroup>
 </Project>

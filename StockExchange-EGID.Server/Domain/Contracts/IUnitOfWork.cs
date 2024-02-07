@@ -12,7 +12,8 @@ namespace StockExchange_EGID.Server.Domain.Contracts
     public interface IUnitOfWork : IDisposable
     {
         IUserRepository User { get; }
-
+        IGenericRepository<Stock> Stock { get; }
+        IGenericRepository<StockHistory> StockHistory { get; }
 
         public IDbContextTransaction BeginTransaction();
         // add more 

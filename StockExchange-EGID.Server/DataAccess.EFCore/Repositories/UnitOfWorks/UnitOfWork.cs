@@ -13,7 +13,8 @@ namespace StockExchange_EGID.Server.Repositories.UnitOfWorks
         private readonly UserManager<User> _userManager;
         private readonly IConfiguration _configuration;
         private IUserRepository _user;
-
+        private IGenericRepository<Stock> _stock;
+        private IGenericRepository<StockHistory> _stockHistory;
 
         public UnitOfWork(ApplicationContext context, ILogger<UnitOfWork> logger, UserManager<User> userManager, IConfiguration configuration)
         {
@@ -33,17 +34,28 @@ namespace StockExchange_EGID.Server.Repositories.UnitOfWorks
                 return _user;
             }
         }
-        //public IDepartmentRepository Department
-        //{
-        //    get
-        //    {
-        //        if (_department == null)
-        //        {
-        //            _department = new DepartmentRepository(_context);
-        //        }
-        //        return _department;
-        //    }
-        //}
+        public IGenericRepository<Stock> Stock
+        {
+            get
+            {
+                if (_stock == null)
+                {
+                    _stock = new GenericRepository<Stock>(_context);
+                }
+                return _stock;
+            }
+        }
+        public IGenericRepository<StockHistory> StockHistory
+        {
+            get
+            {
+                if (_stockHistory == null)
+                {
+                    _stockHistory = new GenericRepository<StockHistory>(_context);
+                }
+                return _stockHistory;
+            }
+        }
 
         public IDbContextTransaction BeginTransaction()
         {

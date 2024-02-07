@@ -1,4 +1,5 @@
-﻿using StockExchange_EGID.Server.Domain.Contracts;
+﻿using StockExchange_EGID.Server.DataAccess.EFCore;
+using StockExchange_EGID.Server.Domain.Contracts;
 using StockExchange_EGID.Server.Repositories.UnitOfWorks;
 
 namespace StockExchange_EGID.Server.Common

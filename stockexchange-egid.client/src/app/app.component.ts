@@ -1,12 +1,5 @@
-import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
-
-interface WeatherForecast {
-  date: string;
-  temperatureC: number;
-  temperatureF: number;
-  summary: string;
-}
+import { SignalRService } from './services/signalr.service';
 
 @Component({
   selector: 'app-root',
@@ -14,24 +7,13 @@ interface WeatherForecast {
   styleUrls: ['./app.component.css']
 })
 export class AppComponent implements OnInit {
-  public forecasts: WeatherForecast[] = [];
-
-  constructor(private http: HttpClient) {}
+  constructor(private signalRService: SignalRService) { }
 
   ngOnInit() {
-    this.getForecasts();
+    this.signalRService.startConnection();
+    this.signalRService.addEventListener('ReceivedPrice', (symbol, price, timestamp) => {
+      console.log('Received data:', { symbol, price, timestamp });
+      // Handle the received data as needed
+    });
   }
-
-  getForecasts() {
-    this.http.get<WeatherForecast[]>('/weatherforecast').subscribe(
-      (result) => {
-        this.forecasts = result;
-      },
-      (error) => {
-        console.error(error);
-      }
-    );
-  }
-
-  title = 'Dashboard';
 }
