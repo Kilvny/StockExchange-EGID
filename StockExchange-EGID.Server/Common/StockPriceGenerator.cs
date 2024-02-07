@@ -22,7 +22,7 @@ namespace StockExchange_EGID.Server.Common
         /// </summary>
         public void Start()
         {
-            _timer = new Timer(UpdateStockPrice, null, TimeSpan.Zero, TimeSpan.FromMinutes(1)); // a 1 minute timer
+            _timer = new Timer(UpdateStockPrice, null, TimeSpan.Zero, TimeSpan.FromSeconds(10)); // a 10 seconds timer
         }
 
         private void UpdateStockPrice(object state)

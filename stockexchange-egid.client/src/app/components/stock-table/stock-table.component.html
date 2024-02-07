@@ -1,0 +1,45 @@
+<div class="mat-elevation-z8">
+  <table mat-table [dataSource]="stocks" class="mat-elevation-z8">
+    <!-- Symbol Column -->
+    <ng-container matColumnDef="symbol">
+      <th mat-header-cell *matHeaderCellDef> Symbol </th>
+      <td mat-cell *matCellDef="let stock"> {{stock.symbol}} </td>
+    </ng-container>
+
+    <!-- Price Column -->
+    <ng-container matColumnDef="price">
+      <th mat-header-cell *matHeaderCellDef> Price </th>
+      <td mat-cell *matCellDef="let stock">
+        <span>{{ stock.price | currency:'USD':'symbol':'1.2-2' }}</span>
+        <span *ngIf="stock.previousPrice !== undefined">
+          <ng-container *ngIf="stock.price > stock.previousPrice">
+            <span style="color: green; font-size: 18px">  &#8593;</span>
+          </ng-container>
+          <ng-container *ngIf="stock.price < stock.previousPrice">
+            <span style="color: red; font-size: 18px">  &#8595;</span>
+          </ng-container>
+        </span>
+      </td>
+    </ng-container>
+
+
+    <!-- Timestamp Column -->
+    <ng-container matColumnDef="timestamp">
+      <th mat-header-cell *matHeaderCellDef> Timestamp </th>
+      <td mat-cell *matCellDef="let stock"> {{ stock.timestamp | date:'medium' }} </td>
+    </ng-container>
+
+    <!-- Actions Column -->
+    <ng-container matColumnDef="actions">
+      <th mat-header-cell *matHeaderCellDef> Actions </th>
+      <td mat-cell *matCellDef="let stock">
+        <button mat-button color="primary" (click)="buyStock(stock)">Buy</button>
+        <button mat-button color="warn" (click)="sellStock(stock)">Sell</button>
+      </td>
+    </ng-container>
+
+
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row *matRowDef="let stock; columns: displayedColumns;"></tr>
+  </table>
+</div>
