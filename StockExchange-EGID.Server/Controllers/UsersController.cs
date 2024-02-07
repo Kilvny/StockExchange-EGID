@@ -26,14 +26,7 @@ namespace StockExchange_EGID.Server.Controllers
         }
 
 
-        [Authorize(AuthenticationSchemes = "Bearer", Roles = "User")]
-        [HttpGet]
-        [Route("api/Tokens")]
-        public IActionResult TestEndPointForUserOnly()
-        {
-            var currentUserRole = User.Claims.FirstOrDefault(u => u.Type == ClaimTypes.Role)?.Value;
-            return Ok($"You're Authorized as {currentUserRole}");
-        }
+
 
         // GET: api/Users
         [HttpHead]

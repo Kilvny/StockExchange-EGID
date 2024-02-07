@@ -15,6 +15,8 @@ namespace StockExchange_EGID.Server.Repositories.UnitOfWorks
         private IUserRepository _user;
         private IGenericRepository<Stock> _stock;
         private IGenericRepository<StockHistory> _stockHistory;
+        private IGenericRepository<Order> _order;
+
 
         public UnitOfWork(ApplicationContext context, ILogger<UnitOfWork> logger, UserManager<User> userManager, IConfiguration configuration)
         {
@@ -56,6 +58,17 @@ namespace StockExchange_EGID.Server.Repositories.UnitOfWorks
                 return _stockHistory;
             }
         }
+        public IGenericRepository<Order> Order
+        {
+            get
+            {
+                if (_order == null)
+                {
+                    _order = new GenericRepository<Order>(_context);
+                }
+                return _order;
+            }
+        }
 
         public IDbContextTransaction BeginTransaction()
         {
@@ -74,9 +87,9 @@ namespace StockExchange_EGID.Server.Repositories.UnitOfWorks
         // Public implementation of Dispose pattern callable by consumers.
         public void Dispose()
         {
-            _context.Dispose();
-            Dispose(disposing: true);
-            GC.SuppressFinalize(this);
+            //_context.Dispose();
+            //Dispose(disposing: true);
+            //GC.SuppressFinalize(this);
         }
 
         // Protected implementation of Dispose pattern.

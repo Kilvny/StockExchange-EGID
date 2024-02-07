@@ -22,37 +22,31 @@ namespace StockExchange_EGID.Server.Common
         /// </summary>
         public void Start()
         {
-            _timer = new Timer(UpdateStockPrice, null, TimeSpan.Zero, TimeSpan.FromSeconds(10)); // a 10 seconds timer
+            _timer = new Timer(async state => await UpdateStockPriceAsync(state), null, TimeSpan.Zero, TimeSpan.FromSeconds(10));
+            // a 10 seconds timer
         }
 
-        private void UpdateStockPrice(object state)
+        public async Task UpdateStockPriceAsync(object state)
         {
-            UpdateStock("AAPL");
-            UpdateStock("GOOGL");
-            UpdateStock("MSFT");
-            UpdateStock("AMZN");
-            UpdateStock("TSLA");
-            //// Generating a random price for simplicity
-            //decimal price = new Random().Next(101, 113);
-            //_stockHub.Clients.All.SendAsync("ReceivePrice", "AAPL", price);
-            //_stockHub.Clients.All.SendAsync("ReceivePrice", "GOOGL", price);
-            //_stockHub.Clients.All.SendAsync("ReceivePrice", "MSFT", price);
-            //_stockHub.Clients.All.SendAsync("ReceivePrice", "AMZN", price);
-            //_stockHub.Clients.All.SendAsync("ReceivePrice", "TSLA", price);
+            await UpdateStock("AAPL");
+            await UpdateStock("GOOGL");
+            await UpdateStock("MSFT");
+            await UpdateStock("AMZN");
+            await UpdateStock("TSLA");
 
         }
 
-        private void UpdateStock(string symbol)
+        private async Task UpdateStock(string symbol)
         {
             // Simulating actual price changes and updating the timestamp
-            decimal currentPrice = GetCurrentPrice(symbol);
+            decimal currentPrice = await GetCurrentPrice(symbol);
             decimal newPrice = SimulatePriceChange(currentPrice);
             DateTime timestamp = DateTime.UtcNow;
 
 
-            UpdateDatabase(symbol, newPrice, timestamp);
+            await UpdateDatabase(symbol, newPrice, timestamp);
             // Sending updated price and timestamp to clients
-            _stockHub.Clients.All.SendAsync("ReceivedPrice", symbol, newPrice, timestamp);
+            await _stockHub.Clients.All.SendAsync("ReceivedPrice", symbol, newPrice, timestamp);
             _applicationContext.StocksHistories.Add(new StockHistory
             {
                 Symbol = symbol,
@@ -63,9 +57,10 @@ namespace StockExchange_EGID.Server.Common
 
         }
 
-        private decimal GetCurrentPrice(string symbol)
+        private async Task<decimal> GetCurrentPrice(string symbol)
         {
-            decimal price = _applicationContext.Stocks.AsNoTracking().Where(x => x.Symbol == symbol).FirstOrDefault().Price;
+  
+            decimal price = await _applicationContext.Stocks.Where(x => x.Symbol == symbol).Select(x => x.Price).FirstOrDefaultAsync();
             return price;
         }
 
@@ -74,9 +69,9 @@ namespace StockExchange_EGID.Server.Common
             decimal priceChange = (decimal)new Random().NextDouble() * 2 - 1; // Random change between -1 and 1
             return currentPrice + priceChange;
         }
-        private void UpdateDatabase(string symbol, decimal newPrice, DateTime timestamp)
+        private async Task UpdateDatabase(string symbol, decimal newPrice, DateTime timestamp)
         {
-            Stock stock = _applicationContext.Stocks.Where(x => x.Symbol == symbol).FirstOrDefault();
+            Stock stock = await _applicationContext.Stocks.Where(x => x.Symbol == symbol).FirstOrDefaultAsync();
             stock.Price = newPrice;
 
             // Store the updated stock information in the database
@@ -88,7 +83,7 @@ namespace StockExchange_EGID.Server.Common
             };
 
             _applicationContext.Stocks.Update(stock);
-            _applicationContext.SaveChanges();
+            await _applicationContext.SaveChangesAsync();
         }
     }
 }

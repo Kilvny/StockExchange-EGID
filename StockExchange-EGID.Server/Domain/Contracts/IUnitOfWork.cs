@@ -14,6 +14,7 @@ namespace StockExchange_EGID.Server.Domain.Contracts
         IUserRepository User { get; }
         IGenericRepository<Stock> Stock { get; }
         IGenericRepository<StockHistory> StockHistory { get; }
+        IGenericRepository<Order> Order { get; }
 
         public IDbContextTransaction BeginTransaction();
         // add more 
