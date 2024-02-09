@@ -9,7 +9,7 @@ import { LoginService } from '../../services/login.service';
   styleUrls: ['./login.component.css']
 })
 export class LoginComponent {
-  loginForm: { username: any, password: any } = { username: "", password :"" };
+  loginForm: { email: any, password: any } = { email: "", password :"" };
   constructor(private router: Router, private loginService: LoginService) { }
 
   login(): void {
@@ -18,9 +18,12 @@ export class LoginComponent {
         // token comes in response
         const token = response;
         this.loginService.storeToken(token);
-        this.router.navigate(['/stocks']); // Redirect after successful login
+        this.router.navigate(['/']); // Redirect after successful login
       },
       (error) => {
+        if (error.status == 200) {
+          this.router.navigate(['/stocks']);
+        }
         console.error('Login failed:', error);
         // handle login failure
       }

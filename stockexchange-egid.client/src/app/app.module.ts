@@ -10,11 +10,14 @@ import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { LoginComponent } from './components/login/login.component';
 import { AuthGuard } from './services/auth.guard';
 import { FormsModule } from '@angular/forms';
+import { MainComponent } from './components/main/main.component';
 
 const appRoutes: Routes = [
   { path: 'login', component: LoginComponent },
-  { path: 'stocks', component: StockTableComponent, canActivate: [AuthGuard] },
-  { path: '', redirectTo: '/', pathMatch: 'full' }
+  {
+    path: '', component: MainComponent, canActivate: [AuthGuard],
+    children: [{path: 'stocks', component: StockTableComponent}]  },
+//  { path: '', redirectTo: '/', pathMatch: 'full' }
 ];
 
 @NgModule({
@@ -22,6 +25,7 @@ const appRoutes: Routes = [
     AppComponent,
     StockTableComponent,
     LoginComponent,
+    MainComponent,
   ],
   imports: [
     BrowserModule,
