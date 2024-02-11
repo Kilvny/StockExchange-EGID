@@ -22,6 +22,7 @@ export class LoginComponent {
       },
       (error) => {
         if (error.status == 200) {
+          localStorage.setItem("token", error.error.text)
           this.router.navigate(['/stocks']);
         }
         console.error('Login failed:', error);
